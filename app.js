@@ -9,20 +9,21 @@ const notion = new Client({
 
 const database_id = process.env.NOTION_DATABASE_ID;
 
-(async () => {
+const getTeamMembers = async () => {
   const response = await notion.databases.retrieve({
     database_id: database_id,
   });
 
-  const getTeamMembers = () => {
-    teamMembers = [];
-    for (const element of response.properties['태그'].multi_select.options) {
-      teamMembers.push(element.name);
-    }
-    return teamMembers;
-  };
+  teamMembers = [];
+  for (const element of response.properties['태그'].multi_select.options) {
+    teamMembers.push(element.name);
+  }
+  return teamMembers;
+};
 
-  console.log(getTeamMembers());
+(async () => {
+  const teamMembers = await getTeamMembers();
+  console.log(teamMembers);
 })();
 
 const getTodayInNotionFormat = () => {
@@ -66,8 +67,8 @@ const getList = async () => {
 };
 
 (async () => {
-  const test = await getList();
-  console.log(test);
+  const todoWriters = await getList();
+  console.log(todoWriters);
 })();
 
 //TODO: Express 활용 라우터 만들기, 타임스케줄 활용 알림메시지 보내기, MessengerR 봇 연결
