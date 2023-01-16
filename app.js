@@ -21,11 +21,6 @@ const getTeamMembers = async () => {
   return teamMembers;
 };
 
-// (async () => {
-//   const teamMembers = await getTeamMembers();
-//   // console.log(teamMembers);
-// })();
-
 const getTodayInNotionFormat = () => {
   //yyyy-mm-dd 포맷 날짜 생성
   let today = new Date();
@@ -66,15 +61,6 @@ const getList = async () => {
   return getListOfTodayTodoWriters;
 };
 
-const getTodayPenaltyList = async () => {
-  const onlyNameList = await todoWriters
-    .map((name) => Object.keys(name))
-    .flat();
-  return teamMembers
-    .filter((name) => !onlyNameList.includes(name))
-    .map((name) => '@' + name);
-};
-
 (async () => {
   const todoWriters = await getList();
   console.log(todoWriters, '--ToDoWriters--');
@@ -92,7 +78,7 @@ const getTodayPenaltyList = async () => {
   };
 
   const todayPenaltyList = await getTodayPenaltyList();
-  console.log(todayPenaltyList);
+  console.log(todayPenaltyList, '--PenaltyList--');
 })();
 
 //TODO: Express 활용 라우터 만들기, 타임스케줄 활용 알림메시지 보내기, MessengerR 봇 연결
