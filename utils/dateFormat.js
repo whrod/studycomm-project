@@ -13,6 +13,7 @@ const getTodayInNotionFormat = () => {
       : '0' + today.getDate().toString())
   );
 };
+//TODO: 브라우저 표준시간 확인 작업 필요
 
 module.exports = {
   getTodayInNotionFormat,

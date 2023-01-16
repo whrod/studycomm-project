@@ -5,7 +5,7 @@ const notion = new Client({
   auth: process.env.NOTION_TOKEN,
 });
 const database_id = process.env.NOTION_DATABASE_ID;
-const { getTodayInNotionFormat } = require('../utils/date-format');
+const { getTodayInNotionFormat } = require('../utils/dateFormat');
 
 const getTeamMembers = async () => {
   const response = await notion.databases.retrieve({
@@ -56,21 +56,8 @@ const getTodayPenaltyList = async (todoWriters, teamMembers) => {
     .map((name) => '@' + name);
 };
 
-// (async () => {
-//   const todoWriters = await getList();
-//   console.log(todoWriters, '--ToDoWriters--');
-
-//   const teamMembers = await getTeamMembers();
-//   console.log(teamMembers, '--TeamMembers--');
-
-//   const todayPenaltyList = await getTodayPenaltyList(todoWriters, teamMembers);
-//   console.log(todayPenaltyList, '--PenaltyList--');
-// })();
-
 module.exports = {
   getTeamMembers,
   getListTodoWriters,
   getTodayPenaltyList,
 };
-
-//TODO: Express 활용 라우터 만들기, 타임스케줄 활용 알림메시지 보내기, MessengerR 봇 연결
