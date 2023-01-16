@@ -69,3 +69,5 @@ const getList = async () => {
   const test = await getList();
   console.log(test);
 })();
+
+//TODO: Express 활용 라우터 만들기, 타임스케줄 활용 알림메시지 보내기, MessengerR 봇 연결
