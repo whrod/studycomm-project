@@ -7,8 +7,6 @@ const notion = new Client({
 const database_id = process.env.NOTION_DATABASE_ID;
 const { getTodayInNotionFormat } = require('../utils/date-format');
 
-const today = getTodayInNotionFormat();
-
 const getTeamMembers = async () => {
   const response = await notion.databases.retrieve({
     database_id: database_id,
@@ -21,13 +19,15 @@ const getTeamMembers = async () => {
   return teamMembers;
 };
 
-const getList = async () => {
+const getListTodoWriters = async () => {
   const payload = {
     path: `databases/${database_id}/query`,
     method: 'POST',
   };
 
   const { results } = await notion.request(payload);
+
+  const today = getTodayInNotionFormat();
 
   const getListOfTodayTodoWriters = results
     .filter((page) => today === page.properties['날짜'].date.start)
@@ -44,11 +44,15 @@ const getList = async () => {
 };
 
 const getTodayPenaltyList = async (todoWriters, teamMembers) => {
-  const onlyNameList = await todoWriters
+  todoWriters = await getListTodoWriters();
+
+  teamMembers = await getTeamMembers();
+
+  const getNamesFromTodoWriters = await todoWriters
     .map((name) => Object.keys(name))
     .flat();
   return teamMembers
-    .filter((name) => !onlyNameList.includes(name))
+    .filter((name) => !getNamesFromTodoWriters.includes(name))
     .map((name) => '@' + name);
 };
 
@@ -65,7 +69,7 @@ const getTodayPenaltyList = async (todoWriters, teamMembers) => {
 
 module.exports = {
   getTeamMembers,
-  getList,
+  getListTodoWriters,
   getTodayPenaltyList,
 };
 
