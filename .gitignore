@@ -141,3 +141,4 @@ dist
 
 # git
 .DS_Store
+.gitmessage.txt
