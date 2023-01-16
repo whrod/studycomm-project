@@ -1,84 +1,31 @@
 require('dotenv').config();
 
 const express = require('express');
-const { Client } = require('@notionhq/client');
+const PORT = process.env.Port || 8001;
 
-const notion = new Client({
-  auth: process.env.NOTION_TOKEN,
+const app = express();
+
+const {
+  getList,
+  getTeamMembers,
+  getTodayPenaltyList,
+} = require('./services/notion.js');
+
+app.get('/study', async (req, res) => {
+  const todoWriters = await getList();
+  res.json(todoWriters);
 });
-
-const database_id = process.env.NOTION_DATABASE_ID;
-
-const getTeamMembers = async () => {
-  const response = await notion.databases.retrieve({
-    database_id: database_id,
-  });
-
-  teamMembers = [];
-  for (const element of response.properties['태그'].multi_select.options) {
-    teamMembers.push(element.name);
-  }
-  return teamMembers;
-};
-
-const getTodayInNotionFormat = () => {
-  //yyyy-mm-dd 포맷 날짜 생성
-  let today = new Date();
-  return (
-    today.getFullYear() +
-    '-' +
-    (today.getMonth() + 1 > 9
-      ? (today.getMonth() + 1).toString()
-      : '0' + (today.getMonth() + 1)) +
-    '-' +
-    (today.getDate() > 9
-      ? today.getDate().toString()
-      : '0' + today.getDate().toString())
-  );
-};
-
-const today = getTodayInNotionFormat();
-
-const getList = async () => {
-  const payload = {
-    path: `databases/${database_id}/query`,
-    method: 'POST',
-  };
-
-  const { results } = await notion.request(payload);
-
-  const getListOfTodayTodoWriters = results
-    .filter((page) => today === page.properties['날짜'].date.start)
-    .map((page) => {
-      const name = page.properties['이름'].title[0].text.content;
-      const link = page.url;
-      const listTodayWriters = {};
-      listTodayWriters[name] = link;
-
-      return listTodayWriters;
-    });
-
-  return getListOfTodayTodoWriters;
-};
+//TODO: Express 활용 라우터 만들기, 타임스케줄 활용 알림메시지 보내기, MessengerR 봇 연결
 
 (async () => {
   const todoWriters = await getList();
   console.log(todoWriters, '--ToDoWriters--');
 
-  const teamMembers = await getTeamMembers();
-  console.log(teamMembers, '--TeamMembers--');
+  //   const teamMembers = await getTeamMembers();
+  //   console.log(teamMembers, '--TeamMembers--');
 
-  const getTodayPenaltyList = async () => {
-    const onlyNameList = await todoWriters
-      .map((name) => Object.keys(name))
-      .flat();
-    return teamMembers
-      .filter((name) => !onlyNameList.includes(name))
-      .map((name) => '@' + name);
-  };
-
-  const todayPenaltyList = await getTodayPenaltyList();
-  console.log(todayPenaltyList, '--PenaltyList--');
+  //   const todayPenaltyList = await getTodayPenaltyList(todoWriters, teamMembers);
+  //   console.log(todayPenaltyList, '--PenaltyList--');
 })();
 
-//TODO: Express 활용 라우터 만들기, 타임스케줄 활용 알림메시지 보내기, MessengerR 봇 연결
+app.listen(PORT, console.log(`Listening to request on Port:${PORT}`));
