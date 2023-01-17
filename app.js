@@ -21,8 +21,6 @@ app.all('*', (req, res, next) => {
 
 app.use(globalErrorHandler);
 
-const PORT = process.env.Port || 8001;
+const PORT = process.env.PORT || 8001;
 
 app.listen(PORT, console.log(`Listening to request on Port:${PORT}`));
-
-//TODO: 타임스케줄 활용 알림메시지 보내기, MessengerR 봇 연결, CORS 패키지 확인, Controller Layer 구상

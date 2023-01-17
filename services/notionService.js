@@ -51,9 +51,8 @@ const getTodayPenaltyList = async (todoWriters, teamMembers) => {
   const getNamesFromTodoWriters = await todoWriters
     .map((name) => Object.keys(name))
     .flat();
-  return teamMembers
-    .filter((name) => !getNamesFromTodoWriters.includes(name))
-    .map((name) => '@' + name);
+  return teamMembers.filter((name) => !getNamesFromTodoWriters.includes(name));
+  // .map((name) => '@' + name);
 };
 
 module.exports = {

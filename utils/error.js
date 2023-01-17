@@ -1,3 +1,4 @@
+//TODO: 컨트롤러 레이어에서 asyncwrap 에러핸들링 구현
 const asyncWrap = (func) => {
   return (req, res, next) => {
     func(req, res, next).catch(next);
